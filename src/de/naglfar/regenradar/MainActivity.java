@@ -84,14 +84,17 @@ public class MainActivity extends SherlockFragmentActivity {
 		return true;
 	}
 
+	Integer activePosition;
+
 	public void refreshData() {
 		if (mPager != null) {
 			mPager.removeAllViews();
+			activePosition = mAdapter.getPrimaryItem();
 			//mIndicator.notifyDataSetChanged();
 			//mAdapter.notifyDataSetChanged();
-			mAdapter = null;
+			/*mAdapter = null;
 			mIndicator = null;
-			mPager = null;
+			mPager = null;*/
 		}
 		mProgress.setVisibility(View.VISIBLE);
 		getXML();
@@ -229,7 +232,11 @@ public class MainActivity extends SherlockFragmentActivity {
 		mIndicator = (TitlePageIndicator)findViewById(R.id.regen_time_indicator);
 		mIndicator.setViewPager(mPager);
 
-		mPager.setCurrentItem(1);
+		if (activePosition == null) {
+			mPager.setCurrentItem(1);
+		} else {
+			mPager.setCurrentItem(activePosition);
+		}
 	}
 
 	/**

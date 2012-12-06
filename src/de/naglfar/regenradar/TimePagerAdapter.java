@@ -4,14 +4,15 @@ import java.util.ArrayList;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 import de.naglfar.regenradar.MainActivity.RadarTime;
 
-class TimePagerAdapter extends FragmentPagerAdapter {
-	protected String[] titles = new String[]{"Bisher", "Jetzt", "Prognose"};
-	protected ArrayList<ArrayList<RadarTime>> timePages;
+class TimePagerAdapter extends FragmentStatePagerAdapter {
+	private String[] titles = new String[]{"Bisher", "Jetzt", "Prognose"};
+	private ArrayList<ArrayList<RadarTime>> timePages;
+
+	private int primaryItem;
 
 	FragmentManager fm;
 
@@ -46,6 +47,7 @@ class TimePagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public void setPrimaryItem(ViewGroup container, int position, Object object) {
+		primaryItem = position;
 		//fm.findFragmentById(arg0)
 		int i;
 		for (i = 0; i < getCount(); i += 1) {
@@ -69,6 +71,10 @@ class TimePagerAdapter extends FragmentPagerAdapter {
 		}
 		/*Log.v("TEST1", ((Fragment) object).getTag());
 		Log.v("TEST2", ""+container.getId());*/
+		super.setPrimaryItem(container, position, object);
+	}
+	public int getPrimaryItem() {
+		return primaryItem;
 	}
 
 

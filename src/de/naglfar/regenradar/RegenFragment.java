@@ -53,6 +53,7 @@ public final class RegenFragment extends SherlockFragment {
 	ArrayList<TimeState> timeStates;
 
 	public static RegenFragment newInstance(ArrayList<RadarTime> values) {
+		Log.v("RegenFragment", "New instance!");
 		RegenFragment fragment = new RegenFragment();
 		fragment.images = values;
 
@@ -136,6 +137,8 @@ public final class RegenFragment extends SherlockFragment {
 				File imgFile = new File(getActivity().getCacheDir() + File.separator + images.get(i).name);
 				if (imgFile.exists()) {
 					bmp = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+				} else {
+					Log.v("RegenFragment", "Missing Image!! "+ images.get(i).name);
 				}
 				String label = sdf.format(images.get(i).date);
 				TimeState ts = new TimeState(bmp, label);
