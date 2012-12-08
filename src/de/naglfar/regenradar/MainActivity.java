@@ -64,11 +64,11 @@ public class MainActivity extends SherlockFragmentActivity {
 		if (xml.exists()) {
 			Long lastModDate = xml.lastModified();
 			// get new if xml is older than 10 minutes
-			//if (lastModDate+600000 > System.currentTimeMillis()) {
+			if (lastModDate+600000 > System.currentTimeMillis()) {
 				buildImages(xml);
-			//} else {
-			//	refreshData();
-			//}
+			} else {
+				refreshData();
+			}
 		} else {
 			refreshData();
 		}
