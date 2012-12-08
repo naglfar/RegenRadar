@@ -35,7 +35,7 @@ public class TouchImageView extends ImageView {
 	PointF last = new PointF();
 	PointF start = new PointF();
 	float minScale = 1f;
-	float maxScale = 3f;
+	float maxScale = 4f;
 	float[] m;
 
 
@@ -86,7 +86,7 @@ public class TouchImageView extends ImageView {
 						break;
 
 					case MotionEvent.ACTION_MOVE:
-						if (event.getPointerCount() > 1 && mode == DRAG) {
+						//if (event.getPointerCount() > 1 && mode == DRAG) {
 							float deltaX = curr.x - last.x;
 							float deltaY = curr.y - last.y;
 							float fixTransX = getFixDragTrans(deltaX, viewWidth, origWidth * saveScale);
@@ -94,7 +94,7 @@ public class TouchImageView extends ImageView {
 							matrix.postTranslate(fixTransX, fixTransY);
 							fixTrans();
 							last.set(curr.x, curr.y);
-						}
+						//}
 						break;
 
 					case MotionEvent.ACTION_UP:
@@ -112,14 +112,38 @@ public class TouchImageView extends ImageView {
 
 				setImageMatrix(matrix);
 				invalidate();
+				if (cb != null) {
+					cb.onCallBack(matrix);
+				}
 				return true; // indicate event was handled
 			}
 
 		});
 	}
 
+	Callback cb;
+	public void setOnTouchEnd(Callback cb) {
+		this.cb = cb;
+	}
+
 	public void setMaxZoom(float x) {
 		maxScale = x;
+	}
+
+	@Override
+	public void setImageMatrix(Matrix matrix) {
+		this.matrix = matrix;
+
+		float[] f = new float[9];
+		//Log.v("TEST", matrix.toString());
+		matrix.getValues(f);
+		if (f != null) {
+			// matrix.postScale(mScaleFactor, mScaleFactor, detector.getFocusX(), detector.getFocusY());
+			// public boolean postScale (float sx, float sy, float px, float py)
+			saveScale = f[4];
+		}
+
+		super.setImageMatrix(matrix);
 	}
 
 	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
@@ -232,5 +256,9 @@ public class TouchImageView extends ImageView {
 			setImageMatrix(matrix);
 		}
 		fixTrans();
+	}
+
+	public interface Callback {
+		abstract void onCallBack(Matrix matrix);
 	}
 }

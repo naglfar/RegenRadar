@@ -7,7 +7,7 @@
 	android:background="@color/black" >
 
 
-	<ImageView
+	<de.naglfar.regenradar.TouchImageView
 		android:id="@+id/regen_imageView"
 		android:layout_width="0dp"
 		android:layout_height="match_parent"

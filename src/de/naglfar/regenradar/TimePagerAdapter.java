@@ -2,6 +2,7 @@ package de.naglfar.regenradar;
 
 import java.util.ArrayList;
 
+import android.graphics.Matrix;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -31,15 +32,29 @@ class TimePagerAdapter extends FragmentPagerAdapter {
 	}
 
 	public void updateFragments(View container) {
+		updateFragments(container, null);
+	}
+	public void updateFragments(View container, Matrix matrix) {
 		if (container != null) {
 			int i;
 			for (i = 0; i < getCount(); i += 1) {
 				RegenFragment f = (RegenFragment) fm.findFragmentByTag("android:switcher:"+container.getId()+":"+i);
 				if (f != null) {
-				//	Log.v("Adapter", "Update: "+i);
 					f.setValue(timePages.get(i));
-				} else {
-				//	Log.v("Adapter", "UpdateNotFound: "+i);
+					if (matrix != null) {
+						f.setMatrix(matrix);
+					}
+				}
+			}
+		}
+	}
+	public void resizeFragments(View container, Matrix matrix) {
+		if (container != null) {
+			int i;
+			for (i = 0; i < getCount(); i += 1) {
+				RegenFragment f = (RegenFragment) fm.findFragmentByTag("android:switcher:"+container.getId()+":"+i);
+				if (f != null) {
+					f.setMatrix(matrix);
 				}
 			}
 		}

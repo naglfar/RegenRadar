@@ -41,7 +41,7 @@ public final class RegenFragment extends SherlockFragment {
 	private SeekBar seekBar;
 	private ImageButton btn_playpause;
 
-	private ImageView imageView;
+	private TouchImageView imageView;
 	private TextView textView;
 
 	private Integer currentPosition;
@@ -74,6 +74,11 @@ public final class RegenFragment extends SherlockFragment {
 	public void setValue(ArrayList<RadarTime> values) {
 		this.images = values;
 	}
+	public void setMatrix(Matrix matrix) {
+		Matrix m = new Matrix(matrix);
+		imageView.setImageMatrix(m);
+		imageView.invalidate();
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -94,8 +99,15 @@ public final class RegenFragment extends SherlockFragment {
 		seekBar = (SeekBar) view.findViewById(R.id.regen_seekBar);
 		btn_playpause = (ImageButton) view.findViewById(R.id.regen_btn_playpause);
 
-		imageView = (ImageView)view.findViewById(R.id.regen_imageView);
+		imageView = (TouchImageView)view.findViewById(R.id.regen_imageView);
 		textView = (TextView) view.findViewById(R.id.regen_textView);
+
+		imageView.setOnTouchEnd(new TouchImageView.Callback(){
+			@Override
+			public void onCallBack(Matrix matrix) {
+				((MainActivity)getActivity()).mAdapter.resizeFragments(((MainActivity)getActivity()).mPager, matrix);
+			}
+		});
 
 		// FIXME
 		start();
