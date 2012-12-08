@@ -39,6 +39,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	ProgressBar mProgress;
 
 	Integer activePosition;
+	public Boolean scaled = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
