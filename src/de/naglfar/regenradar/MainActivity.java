@@ -14,17 +14,16 @@ import org.xmlpull.v1.XmlPullParserException;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.PageIndicator;
 import com.viewpagerindicator.TitlePageIndicator;
+import de.naglfar.regenradar.OneFingerViewPager;
 
 public class MainActivity extends SherlockFragmentActivity {
 
@@ -33,7 +32,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	static String API_URL = "http://kunden.wetteronline.de/RegenRadar/radar_android2.xml";
 	static String API_IMAGES = "http://kunden.wetteronline.de/RegenRadar/";
 
-	ViewPager mPager;
+	OneFingerViewPager mPager;
 	TimePagerAdapter mAdapter;
 	PageIndicator mIndicator;
 	ProgressBar mProgress;
@@ -65,11 +64,11 @@ public class MainActivity extends SherlockFragmentActivity {
 		if (xml.exists()) {
 			Long lastModDate = xml.lastModified();
 			// get new if xml is older than 10 minutes
-			if (lastModDate+600000 > System.currentTimeMillis()) {
+			//if (lastModDate+600000 > System.currentTimeMillis()) {
 				buildImages(xml);
-			} else {
-				refreshData();
-			}
+			//} else {
+			//	refreshData();
+			//}
 		} else {
 			refreshData();
 		}
@@ -252,7 +251,20 @@ public class MainActivity extends SherlockFragmentActivity {
 
 			mAdapter = new TimePagerAdapter(getSupportFragmentManager(), values);
 
-			mPager = (ViewPager)findViewById(R.id.regen_pager);
+			mPager = (OneFingerViewPager)findViewById(R.id.regen_pager);
+
+			// disable swiping with more than 1 fingers
+			/*mPager.setOnTouchListener(new OnTouchListener() {
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					if (event.getPointerCount() > 1) {
+						return false;
+					}
+					return true;
+				}
+			});*/
+
+
 			mAdapter.updateFragments(mPager);
 			mPager.setAdapter(mAdapter);
 

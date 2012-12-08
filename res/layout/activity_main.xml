@@ -21,10 +21,9 @@
 			android:id="@+id/regen_time_indicator"
 			android:padding="10dip"
 			android:layout_height="wrap_content"
-			android:layout_width="fill_parent"
-			/>
+			android:layout_width="fill_parent" />
 
-		<android.support.v4.view.ViewPager
+		<de.naglfar.regenradar.OneFingerViewPager
 			android:id="@+id/regen_pager"
 			android:layout_width="match_parent"
 			android:layout_height="0px"

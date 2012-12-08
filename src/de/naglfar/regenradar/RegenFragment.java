@@ -8,9 +8,11 @@ import java.util.Arrays;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.FloatMath;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -32,6 +34,7 @@ import de.naglfar.regenradar.MainActivity.RadarTime;
 public final class RegenFragment extends SherlockFragment {
 
 	private static int TIMER_DELAY = 1000;
+	private static String TAG = "EVENT";
 
 	private boolean started = false;
 	private ArrayList<RadarTime> images;
@@ -93,79 +96,6 @@ public final class RegenFragment extends SherlockFragment {
 
 		imageView = (ImageView)view.findViewById(R.id.regen_imageView);
 		textView = (TextView) view.findViewById(R.id.regen_textView);
-
-		imageView.setOnTouchListener(new OnTouchListener() {
-			float x, y;
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				/*Log.v("SCALE", "1: "+MotionEvent.ACTION_DOWN);
-				Log.v("SCALE", "2: "+MotionEvent.ACTION_UP);
-				Log.v("SCALE", "3: "+event.getAction());*/
-				if (event.getAction() == MotionEvent.ACTION_DOWN) {
-					x = event.getX();
-					y = event.getY();
-				} else if (event.getAction() == MotionEvent.ACTION_UP) {
-					float nx = event.getX(), ny = event.getY();
-					float xd = Math.abs(x - nx);
-					float yd = Math.abs(y - ny);
-					//Log.v("SCALE", ""+ x+","+y+","+event.getX()+","+event.getY());
-					if (xd < 5 && yd < 5) {
-						if (((MainActivity)getActivity()).scaled == true) {
-							((MainActivity)getActivity()).scaled = false;
-							imageView.setScaleType(ScaleType.FIT_START);
-						} else {
-							((MainActivity)getActivity()).scaled = true;
-							Matrix matrix = new Matrix();
-
-							float scale = 1f;
-							Matrix imageMatrix = imageView.getImageMatrix();
-							if (imageMatrix != null) {
-								float[] f = new float[9];
-								imageMatrix.getValues(f);
-
-								scale = f[Matrix.MSCALE_X];
-							}
-
-							// original bitmap
-							Bitmap bmp = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
-							//Log.v("BMP", bmp.getWidth() + ":"+bmp.getHeight());
-							//Log.v("BMP2", (bmp.getWidth()*scale) + ":"+(bmp.getHeight()*scale));
-
-							// scaled bitmap dimensions
-							float bmpWidth = (bmp.getWidth()*scale);
-							float bmpHeight = (bmp.getHeight()*scale);
-
-							float moveX, moveY;
-							if (nx < bmpWidth * 0.25f) {
-								moveX = 0;
-							}/* else if (nx > bmpWidth * 0.75f) {
-								moveX = -1 * bmpWidth;
-							}*/ else {
-								moveX = -1 * (nx + (bmpWidth / 2));
-							}
-							if (ny < bmpHeight * 0.25f) {
-								moveY = 0;
-							}/* else if (ny > bmpHeight * 0.75f) {
-								moveY = -1 * bmpHeight;
-							}*/ else {
-								moveY = -1 * (ny + (bmpHeight / 2));
-							}
-
-							Log.v("CENTER", nx+":"+ny);
-							Log.v("MOVE", moveX+":"+moveY);
-							//Log.v("DIMENSIONS", imageView.getWidth()+":"+imageView.getHeight());
-
-							matrix.postScale(4f, 4f);
-							matrix.postTranslate(moveX, moveY);
-							imageView.setScaleType(ScaleType.MATRIX);
-							imageView.setImageMatrix(matrix);
-						}
-					}
-				}
-				return true;
-			}
-		});
 
 		// FIXME
 		start();

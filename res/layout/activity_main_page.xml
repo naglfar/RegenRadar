@@ -15,7 +15,7 @@
 		android:gravity="center"
 		android:textColor="@color/white" />
 
-	<ImageView
+	<de.naglfar.regenradar.TouchImageView
 		android:id="@+id/regen_imageView"
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
