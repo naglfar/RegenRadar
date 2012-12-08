@@ -37,6 +37,7 @@ public final class RegenFragment extends SherlockFragment {
 	private TextView textView;
 
 	private Integer currentPosition;
+	private Boolean lastRun = true;
 
 	class TimeState {
 		private Bitmap bitmap;
@@ -73,6 +74,7 @@ public final class RegenFragment extends SherlockFragment {
 		if (savedInstanceState != null) {
 			RadarTime[] values = (RadarTime[]) savedInstanceState.getParcelableArray("images");
 			images = new ArrayList<RadarTime>(Arrays.asList(values));
+			lastRun = savedInstanceState.getBoolean("run", true);
 		}
 	}
 
@@ -164,12 +166,13 @@ public final class RegenFragment extends SherlockFragment {
 
 			if (images.size() > 1) {
 				btn_playpause.setImageResource(R.drawable.ic_pause);
+				btn_playpause.setContentDescription(getActivity().getText(R.string.pause));
 				if (timerRunnable != null) {
 					timerRunnable.setRun(false);
 					timerRunnable = null;
 				}
 				timerRunnable = new TimerRunnable(cb);
-				timerRunnable.setRun(true);
+				timerRunnable.setRun(lastRun);
 				timerHandler.postDelayed(timerRunnable, TIMER_DELAY);
 			} else {
 				seekBar.setVisibility(View.GONE);
@@ -222,13 +225,15 @@ public final class RegenFragment extends SherlockFragment {
 		RadarTime[] values = new RadarTime[images.size()];
 		images.toArray(values);
 		outState.putParcelableArray("images", values);
+		if (timerRunnable != null) {
+			outState.putBoolean("run", timerRunnable.run);
+		}
 	}
 
-	/*
 	@Override
 	public void onPause() {
 		super.onPause();
-		Log.v("Fragment", "PAUSE");
+		//Log.v("Fragment", "PAUSE");
 		if (timerRunnable != null) {
 			timerRunnable.setRun(false);
 		}
@@ -236,13 +241,13 @@ public final class RegenFragment extends SherlockFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		Log.v("Fragment", "RESUME");
+		//Log.v("Fragment", "RESUME");
 		if (timerRunnable != null  && timerRunnable.run == false) {
 			timerRunnable.setRun(true);
 			timerHandler.postDelayed(timerRunnable, 0);
 		}
 	}
-	*/
+
 
 	private Handler timerHandler = new Handler();
 	private TimerRunnable timerRunnable;
@@ -256,8 +261,10 @@ public final class RegenFragment extends SherlockFragment {
 			this.run = run;
 			if (run == true) {
 				btn_playpause.setImageResource(R.drawable.ic_pause);
+				btn_playpause.setContentDescription(getActivity().getText(R.string.pause));
 			} else {
 				btn_playpause.setImageResource(R.drawable.ic_play);
+				btn_playpause.setContentDescription(getActivity().getText(R.string.play));
 			}
 		}
 		@Override

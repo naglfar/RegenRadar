@@ -239,6 +239,8 @@ public class MainActivity extends SherlockFragmentActivity {
 			} else {
 				setupPager(values);
 			}
+		} else {
+			Log.v("MAIN", "entries are null");
 		}
 	}
 
