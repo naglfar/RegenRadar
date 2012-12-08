@@ -15,9 +15,11 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -25,6 +27,8 @@ import com.viewpagerindicator.PageIndicator;
 import com.viewpagerindicator.TitlePageIndicator;
 
 public class MainActivity extends SherlockFragmentActivity {
+
+	static final String STATE_TAB = "de.naglfar.regenradar.state_tab";
 
 	static String API_URL = "http://kunden.wetteronline.de/RegenRadar/radar_android2.xml";
 	static String API_IMAGES = "http://kunden.wetteronline.de/RegenRadar/";
@@ -34,10 +38,16 @@ public class MainActivity extends SherlockFragmentActivity {
 	PageIndicator mIndicator;
 	ProgressBar mProgress;
 
+	Integer activePosition;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		if (savedInstanceState != null) {
+			activePosition = savedInstanceState.getInt(STATE_TAB, 1);
+		}
 
 		/*values.add("http://www.wetteronline.de/cgi-bin/radbild?END=f&CONT=dldl&CREG=dwddg&ZEIT=vieT201211301730&LANG=de");
 		values.add("http://www.wetteronline.de/daten/radarhtml/de/dwddg/radarf.htm");
@@ -84,8 +94,6 @@ public class MainActivity extends SherlockFragmentActivity {
 		return true;
 	}
 
-	Integer activePosition;
-
 	public void refreshData() {
 		if (mPager != null) {
 			mPager.removeAllViews();
@@ -98,6 +106,18 @@ public class MainActivity extends SherlockFragmentActivity {
 		}
 		mProgress.setVisibility(View.VISIBLE);
 		getXML();
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		if (mAdapter != null) {
+			activePosition = mAdapter.getPrimaryItem();
+
+			if (activePosition != null) {
+				savedInstanceState.putInt(STATE_TAB, activePosition);
+			}
+		}
+		super.onSaveInstanceState(savedInstanceState);
 	}
 
 
