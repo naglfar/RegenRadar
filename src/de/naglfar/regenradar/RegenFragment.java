@@ -26,6 +26,8 @@ import de.naglfar.regenradar.MainActivity.RadarTime;
 
 public final class RegenFragment extends SherlockFragment {
 
+	private static int TIMER_DELAY = 1000;
+
 	private boolean started = false;
 	private ArrayList<RadarTime> images;
 	private SeekBar seekBar;
@@ -60,6 +62,10 @@ public final class RegenFragment extends SherlockFragment {
 		return fragment;
 	}
 
+	public void setValue(ArrayList<RadarTime> values) {
+		this.images = values;
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -89,6 +95,8 @@ public final class RegenFragment extends SherlockFragment {
 	}
 
 	public void start() {
+		//Log.v("Fragment", "Start!");
+
 		started = true;
 		if (images != null && images.size() > 0) {
 
@@ -162,7 +170,7 @@ public final class RegenFragment extends SherlockFragment {
 				}
 				timerRunnable = new TimerRunnable(cb);
 				timerRunnable.setRun(true);
-				timerHandler.postDelayed(timerRunnable, 0);
+				timerHandler.postDelayed(timerRunnable, TIMER_DELAY);
 			} else {
 				seekBar.setVisibility(View.GONE);
 				btn_playpause.setVisibility(View.GONE);
@@ -175,6 +183,7 @@ public final class RegenFragment extends SherlockFragment {
 	}
 
 	public void stop() {
+		//Log.v("Fragment", "Stop!");
 		started = false;
 		if (timerRunnable != null) {
 			timerRunnable.setRun(false);
@@ -215,10 +224,11 @@ public final class RegenFragment extends SherlockFragment {
 		outState.putParcelableArray("images", values);
 	}
 
+	/*
 	@Override
 	public void onPause() {
 		super.onPause();
-		//Log.v("PAUSE", "PAUSE");
+		Log.v("Fragment", "PAUSE");
 		if (timerRunnable != null) {
 			timerRunnable.setRun(false);
 		}
@@ -226,12 +236,13 @@ public final class RegenFragment extends SherlockFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		//Log.v("RESUME", "RESUME");
+		Log.v("Fragment", "RESUME");
 		if (timerRunnable != null  && timerRunnable.run == false) {
 			timerRunnable.setRun(true);
 			timerHandler.postDelayed(timerRunnable, 0);
 		}
 	}
+	*/
 
 	private Handler timerHandler = new Handler();
 	private TimerRunnable timerRunnable;
@@ -253,7 +264,7 @@ public final class RegenFragment extends SherlockFragment {
 		public void run() {
 			if(run == true) {
 				cb.onCallBack();
-				timerHandler.postDelayed(this, 1000);
+				timerHandler.postDelayed(this, TIMER_DELAY);
 			}
 		}
 	}

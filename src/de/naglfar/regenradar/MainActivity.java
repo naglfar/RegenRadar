@@ -98,6 +98,8 @@ public class MainActivity extends SherlockFragmentActivity {
 		if (mPager != null) {
 			mPager.removeAllViews();
 			activePosition = mAdapter.getPrimaryItem();
+			Log.v("Main", "fmc: "+mAdapter.fm.getBackStackEntryCount());
+			//mAdapter.fm.
 			//mIndicator.notifyDataSetChanged();
 			//mAdapter.notifyDataSetChanged();
 			/*mAdapter = null;
@@ -247,6 +249,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		mAdapter = new TimePagerAdapter(getSupportFragmentManager(), values);
 
 		mPager = (ViewPager)findViewById(R.id.regen_pager);
+		mAdapter.updateFragments(mPager);
 		mPager.setAdapter(mAdapter);
 
 		mIndicator = (TitlePageIndicator)findViewById(R.id.regen_time_indicator);
