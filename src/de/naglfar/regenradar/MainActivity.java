@@ -246,21 +246,23 @@ public class MainActivity extends SherlockFragmentActivity {
 
 	private void setupPager(ArrayList<ArrayList<RadarTime>> values) {
 
-		mProgress.setVisibility(View.GONE);
+		if (!this.isDestroyed()) {
+			mProgress.setVisibility(View.GONE);
 
-		mAdapter = new TimePagerAdapter(getSupportFragmentManager(), values);
+			mAdapter = new TimePagerAdapter(getSupportFragmentManager(), values);
 
-		mPager = (ViewPager)findViewById(R.id.regen_pager);
-		mAdapter.updateFragments(mPager);
-		mPager.setAdapter(mAdapter);
+			mPager = (ViewPager)findViewById(R.id.regen_pager);
+			mAdapter.updateFragments(mPager);
+			mPager.setAdapter(mAdapter);
 
-		mIndicator = (TitlePageIndicator)findViewById(R.id.regen_time_indicator);
-		mIndicator.setViewPager(mPager);
+			mIndicator = (TitlePageIndicator)findViewById(R.id.regen_time_indicator);
+			mIndicator.setViewPager(mPager);
 
-		if (activePosition == null) {
-			mPager.setCurrentItem(1);
-		} else {
-			mPager.setCurrentItem(activePosition);
+			if (activePosition == null) {
+				mPager.setCurrentItem(1);
+			} else {
+				mPager.setCurrentItem(activePosition);
+			}
 		}
 	}
 
