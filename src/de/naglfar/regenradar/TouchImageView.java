@@ -5,6 +5,7 @@ package de.naglfar.regenradar;
  * By: Michael Ortiz
  * Updated By: Patrick Lackemacher
  * Updated By: Babay88
+ * Updated By: naglfar
  * -------------------
  * Extends Android ImageView to include pinch zooming and panning.
  */

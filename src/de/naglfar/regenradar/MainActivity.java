@@ -271,7 +271,7 @@ public class MainActivity extends SherlockFragmentActivity {
 
 	private void setupPager(ArrayList<ArrayList<RadarTime>> values) {
 
-		if (!this.isDestroyed()) {
+		if (this != null) {
 			mProgress.setVisibility(View.GONE);
 
 			mAdapter = new TimePagerAdapter(getSupportFragmentManager(), values);
