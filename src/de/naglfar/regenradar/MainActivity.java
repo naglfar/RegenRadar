@@ -11,7 +11,9 @@ import java.util.Set;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import android.graphics.Matrix;
 import android.os.Bundle;
+import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -23,7 +25,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.PageIndicator;
 import com.viewpagerindicator.TitlePageIndicator;
-import de.naglfar.regenradar.OneFingerViewPager;
 
 public class MainActivity extends SherlockFragmentActivity {
 
@@ -38,7 +39,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	ProgressBar mProgress;
 
 	Integer activePosition;
-	public Boolean scaled = false;
+	public Matrix matrix;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -119,6 +120,9 @@ public class MainActivity extends SherlockFragmentActivity {
 				savedInstanceState.putInt(STATE_TAB, activePosition);
 			}
 		}
+
+		// FIXME: do something with our matrix, at least save scale & coords
+
 		super.onSaveInstanceState(savedInstanceState);
 	}
 
@@ -276,6 +280,17 @@ public class MainActivity extends SherlockFragmentActivity {
 			} else {
 				mPager.setCurrentItem(activePosition);
 			}
+		}
+	}
+
+	public Matrix getMatrix() {
+		return matrix;
+	}
+
+	public void resizeFragments(Matrix matrix) {
+		this.matrix = matrix;
+		if (mAdapter != null) {
+			mAdapter.resizeFragments(mPager, matrix);
 		}
 	}
 

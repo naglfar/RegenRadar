@@ -76,8 +76,10 @@ public final class RegenFragment extends SherlockFragment {
 	}
 	public void setMatrix(Matrix matrix) {
 		Matrix m = new Matrix(matrix);
-		imageView.setImageMatrix(m);
-		imageView.invalidate();
+		if (imageView != null) {
+			imageView.setImageMatrix(m);
+			imageView.invalidate();
+		}
 	}
 
 	@Override
@@ -105,9 +107,11 @@ public final class RegenFragment extends SherlockFragment {
 		imageView.setOnTouchEnd(new TouchImageView.Callback(){
 			@Override
 			public void onCallBack(Matrix matrix) {
-				((MainActivity)getActivity()).mAdapter.resizeFragments(((MainActivity)getActivity()).mPager, matrix);
+				//((MainActivity)getActivity()).mAdapter.resizeFragments(((MainActivity)getActivity()).mPager, matrix);
+				((MainActivity)getActivity()).resizeFragments(matrix);
 			}
 		});
+		this.setMatrix(((MainActivity)getActivity()).getMatrix());
 
 		// FIXME
 		start();
@@ -197,8 +201,9 @@ public final class RegenFragment extends SherlockFragment {
 					timerHandler.postDelayed(timerRunnable, TIMER_DELAY / 2);
 				}
 			} else {
-				seekBar.setVisibility(View.GONE);
-				btn_playpause.setVisibility(View.GONE);
+				// set invisible instead of GONE to use up space
+				seekBar.setVisibility(View.INVISIBLE);
+				btn_playpause.setVisibility(View.INVISIBLE);
 				cb.onCallBack();
 			}
 		} else {

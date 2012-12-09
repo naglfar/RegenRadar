@@ -11,8 +11,10 @@ package de.naglfar.regenradar;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.PointF;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -86,7 +88,7 @@ public class TouchImageView extends ImageView {
 						break;
 
 					case MotionEvent.ACTION_MOVE:
-						//if (event.getPointerCount() > 1 && mode == DRAG) {
+						if (event.getPointerCount() > 1) { // && mode == DRAG) {
 							float deltaX = curr.x - last.x;
 							float deltaY = curr.y - last.y;
 							float fixTransX = getFixDragTrans(deltaX, viewWidth, origWidth * saveScale);
@@ -94,15 +96,17 @@ public class TouchImageView extends ImageView {
 							matrix.postTranslate(fixTransX, fixTransY);
 							fixTrans();
 							last.set(curr.x, curr.y);
-						//}
+						}
 						break;
 
 					case MotionEvent.ACTION_UP:
 						mode = NONE;
 						int xDiff = (int) Math.abs(curr.x - start.x);
 						int yDiff = (int) Math.abs(curr.y - start.y);
-						if (xDiff < CLICK && yDiff < CLICK)
+						if (xDiff < CLICK && yDiff < CLICK) {
 							performClick();
+						}
+						//fixTrans();
 						break;
 
 					case MotionEvent.ACTION_POINTER_UP:
@@ -110,10 +114,12 @@ public class TouchImageView extends ImageView {
 						break;
 				}
 
-				setImageMatrix(matrix);
-				invalidate();
-				if (cb != null) {
-					cb.onCallBack(matrix);
+				if (event.getPointerCount() > 1) {
+					setImageMatrix(matrix);
+					invalidate();
+					if (cb != null) {
+						cb.onCallBack(matrix);
+					}
 				}
 				return true; // indicate event was handled
 			}
@@ -177,6 +183,8 @@ public class TouchImageView extends ImageView {
 	}
 
 	void fixTrans() {
+		// FIXME: fix this function (and find out what it's supposed to do first)
+
 		matrix.getValues(m);
 		float transX = m[Matrix.MTRANS_X];
 		float transY = m[Matrix.MTRANS_Y];
@@ -226,33 +234,33 @@ public class TouchImageView extends ImageView {
 		oldMeasuredHeight = viewHeight;
 		oldMeasuredWidth = viewWidth;
 
+		//Fit to screen.
+		float scale;
+
+		Drawable drawable = getDrawable();
+		if (drawable == null || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0)
+			return;
+		int bmWidth = drawable.getIntrinsicWidth();
+		int bmHeight = drawable.getIntrinsicHeight();
+
+		Log.d("bmSize", "bmWidth: " + bmWidth + " bmHeight : " + bmHeight);
+
+		float scaleX = (float) viewWidth / (float) bmWidth;
+		float scaleY = (float) viewHeight / (float) bmHeight;
+		scale = Math.min(scaleX, scaleY);
+
+		// Center the image
+		float redundantYSpace = (float) viewHeight - (scale * (float) bmHeight);
+		float redundantXSpace = (float) viewWidth - (scale * (float) bmWidth);
+		redundantYSpace /= (float) 2;
+		redundantXSpace /= (float) 2;
+
+		origWidth = viewWidth - 2 * redundantXSpace;
+		origHeight = viewHeight - 2 * redundantYSpace;
+
 		if (saveScale == 1) {
-			//Fit to screen.
-			float scale;
-
-			Drawable drawable = getDrawable();
-			if (drawable == null || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0)
-				return;
-			int bmWidth = drawable.getIntrinsicWidth();
-			int bmHeight = drawable.getIntrinsicHeight();
-
-			Log.d("bmSize", "bmWidth: " + bmWidth + " bmHeight : " + bmHeight);
-
-			float scaleX = (float) viewWidth / (float) bmWidth;
-			float scaleY = (float) viewHeight / (float) bmHeight;
-			scale = Math.min(scaleX, scaleY);
 			matrix.setScale(scale, scale);
-
-			// Center the image
-			float redundantYSpace = (float) viewHeight - (scale * (float) bmHeight);
-			float redundantXSpace = (float) viewWidth - (scale * (float) bmWidth);
-			redundantYSpace /= (float) 2;
-			redundantXSpace /= (float) 2;
-
 			matrix.postTranslate(redundantXSpace, redundantYSpace);
-
-			origWidth = viewWidth - 2 * redundantXSpace;
-			origHeight = viewHeight - 2 * redundantYSpace;
 			setImageMatrix(matrix);
 		}
 		fixTrans();
