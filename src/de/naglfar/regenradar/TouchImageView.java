@@ -11,13 +11,10 @@ package de.naglfar.regenradar;
 
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.PointF;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -37,7 +34,7 @@ public class TouchImageView extends ImageView {
 	PointF last = new PointF();
 	PointF start = new PointF();
 	float minScale = 1f;
-	float maxScale = 4f;
+	float maxScale = 8f;
 	float[] m;
 
 
@@ -183,8 +180,6 @@ public class TouchImageView extends ImageView {
 	}
 
 	void fixTrans() {
-		// FIXME: fix this function (and find out what it's supposed to do first)
-
 		matrix.getValues(m);
 		float transX = m[Matrix.MTRANS_X];
 		float transY = m[Matrix.MTRANS_Y];
@@ -192,12 +187,17 @@ public class TouchImageView extends ImageView {
 		float fixTransX = getFixTrans(transX, viewWidth, origWidth * saveScale);
 		float fixTransY = getFixTrans(transY, viewHeight, origHeight * saveScale);
 
+		//Log.v("FIX", transX+":"+transY+":"+fixTransX+":"+fixTransY);
+		//Log.v("FIX", origWidth+":"+origHeight+":"+saveScale);
+
 		if (fixTransX != 0 || fixTransY != 0)
 			matrix.postTranslate(fixTransX, fixTransY);
 	}
 
 	float getFixTrans(float trans, float viewSize, float contentSize) {
 		float minTrans, maxTrans;
+
+		//Log.v("FIX", "v: "+viewSize+ " : c:" +contentSize);
 
 		if (contentSize <= viewSize) {
 			minTrans = 0;
@@ -207,10 +207,13 @@ public class TouchImageView extends ImageView {
 			maxTrans = 0;
 		}
 
-		if (trans < minTrans)
+		if (trans < minTrans) {
 			return -trans + minTrans;
-		if (trans > maxTrans)
+		}
+		if (trans > maxTrans) {
 			return -trans + maxTrans;
+		}
+
 		return 0;
 	}
 
@@ -227,6 +230,8 @@ public class TouchImageView extends ImageView {
 		viewWidth = MeasureSpec.getSize(widthMeasureSpec);
 		viewHeight = MeasureSpec.getSize(heightMeasureSpec);
 
+		//Log.v("MEASURE", "w: "+viewWidth+" : h: "+viewHeight);
+
 		// Rescales image on rotation
 		if (oldMeasuredHeight == viewWidth && oldMeasuredHeight == viewHeight || viewWidth == 0 || viewHeight == 0) {
 			return;
@@ -238,8 +243,9 @@ public class TouchImageView extends ImageView {
 		float scale;
 
 		Drawable drawable = getDrawable();
-		if (drawable == null || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0)
+		if (drawable == null || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0) {
 			return;
+		}
 		int bmWidth = drawable.getIntrinsicWidth();
 		int bmHeight = drawable.getIntrinsicHeight();
 
@@ -247,7 +253,12 @@ public class TouchImageView extends ImageView {
 
 		float scaleX = (float) viewWidth / (float) bmWidth;
 		float scaleY = (float) viewHeight / (float) bmHeight;
+
+		//Log.v("SCALE", scaleX+":"+scaleY);
+
 		scale = Math.min(scaleX, scaleY);
+
+		minScale = scale;
 
 		// Center the image
 		float redundantYSpace = (float) viewHeight - (scale * (float) bmHeight);
@@ -255,10 +266,13 @@ public class TouchImageView extends ImageView {
 		redundantYSpace /= (float) 2;
 		redundantXSpace /= (float) 2;
 
-		origWidth = viewWidth - 2 * redundantXSpace;
-		origHeight = viewHeight - 2 * redundantYSpace;
+		// FIXME: original implementation: why?
+		/*origWidth = viewWidth - 2 * redundantXSpace;
+		origHeight = viewHeight - 2 * redundantYSpace;*/
+		origWidth = bmWidth;
+		origHeight = bmHeight;
 
-		if (saveScale == 1) {
+		if (saveScale <= minScale) {
 			matrix.setScale(scale, scale);
 			matrix.postTranslate(redundantXSpace, redundantYSpace);
 			setImageMatrix(matrix);

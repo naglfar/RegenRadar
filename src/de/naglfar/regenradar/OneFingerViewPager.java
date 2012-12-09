@@ -1,10 +1,8 @@
 package de.naglfar.regenradar;
 
 import android.content.Context;
-import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 
 public class OneFingerViewPager extends ViewPager {
@@ -55,8 +53,6 @@ public class OneFingerViewPager extends ViewPager {
 			ignoreEvent = true;
 		}
 		if (!ignoreEvent && distanceOverThreshold() && e.getPointerCount() == 1) {
-			Log.v("PAGER", "T: "+distanceOverThreshold());
-
 			return true;
 		}
 
