@@ -233,9 +233,9 @@ public class TouchImageView extends ImageView {
 		//Log.v("MEASURE", "w: "+viewWidth+" : h: "+viewHeight);
 
 		// Rescales image on rotation
-		if (oldMeasuredHeight == viewWidth && oldMeasuredHeight == viewHeight || viewWidth == 0 || viewHeight == 0) {
+		/*if (oldMeasuredHeight == viewWidth && oldMeasuredHeight == viewHeight || viewWidth == 0 || viewHeight == 0) {
 			return;
-		}
+		}*/
 		oldMeasuredHeight = viewHeight;
 		oldMeasuredWidth = viewWidth;
 

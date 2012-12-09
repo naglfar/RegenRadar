@@ -11,9 +11,9 @@ import java.util.Set;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import android.content.SharedPreferences;
 import android.graphics.Matrix;
 import android.os.Bundle;
-import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -29,6 +29,10 @@ import com.viewpagerindicator.TitlePageIndicator;
 public class MainActivity extends SherlockFragmentActivity {
 
 	static final String STATE_TAB = "de.naglfar.regenradar.state_tab";
+	static final String STATE_MATRIX = "de.naglfar.regenradar.state_matrix";
+
+	static final String PREF_KEY = "de.naglfar.regenradar";
+	static final String PREF_MATRIX_PREFIX = "MATRIX_VALUE_";
 
 	static String API_URL = "http://kunden.wetteronline.de/RegenRadar/radar_android2.xml";
 	static String API_IMAGES = "http://kunden.wetteronline.de/RegenRadar/";
@@ -48,6 +52,18 @@ public class MainActivity extends SherlockFragmentActivity {
 
 		if (savedInstanceState != null) {
 			activePosition = savedInstanceState.getInt(STATE_TAB, 1);
+			float[] matrixValues = new float[9];
+			matrixValues = savedInstanceState.getFloatArray(STATE_MATRIX);
+			matrix = new Matrix();
+			matrix.setValues(matrixValues);
+		} else {
+			SharedPreferences pref = getSharedPreferences(PREF_KEY, MODE_PRIVATE);
+			float[] matrixValues = new float[9];
+			for (int i = 0; i < 9; i += 1) {
+				matrixValues[i] = pref.getFloat(PREF_MATRIX_PREFIX+i, 0);
+			}
+			matrix = new Matrix();
+			matrix.setValues(matrixValues);
 		}
 
 		/*values.add("http://www.wetteronline.de/cgi-bin/radbild?END=f&CONT=dldl&CREG=dwddg&ZEIT=vieT201211301730&LANG=de");
@@ -74,6 +90,26 @@ public class MainActivity extends SherlockFragmentActivity {
 			refreshData();
 		}
 
+	}
+
+
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		if (mAdapter != null) {
+			activePosition = mAdapter.getPrimaryItem();
+
+			if (activePosition != null) {
+				savedInstanceState.putInt(STATE_TAB, activePosition);
+			}
+		}
+
+		if (matrix != null) {
+			float[] matrixValues = new float[9];
+			matrix.getValues(matrixValues);
+			savedInstanceState.putFloatArray(STATE_MATRIX, matrixValues);
+		}
+
+		super.onSaveInstanceState(savedInstanceState);
 	}
 
 
@@ -110,22 +146,6 @@ public class MainActivity extends SherlockFragmentActivity {
 		mProgress.setVisibility(View.VISIBLE);
 		getXML();
 	}
-
-	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-		if (mAdapter != null) {
-			activePosition = mAdapter.getPrimaryItem();
-
-			if (activePosition != null) {
-				savedInstanceState.putInt(STATE_TAB, activePosition);
-			}
-		}
-
-		// FIXME: do something with our matrix, at least save scale & coords
-
-		super.onSaveInstanceState(savedInstanceState);
-	}
-
 
 	public void getXML() {
 		DownloadFinished df = new DownloadFinished() {
@@ -287,8 +307,21 @@ public class MainActivity extends SherlockFragmentActivity {
 		return matrix;
 	}
 
+
 	public void resizeFragments(Matrix matrix) {
+
 		this.matrix = matrix;
+
+		if (matrix != null) {
+			SharedPreferences.Editor editor = getSharedPreferences(PREF_KEY, MODE_PRIVATE).edit();
+			float[] matrixValues = new float[9];
+			matrix.getValues(matrixValues);
+			for (int i = 0; i < matrixValues.length; i += 1) {
+				editor.putFloat(PREF_MATRIX_PREFIX+i, matrixValues[i]);
+			}
+			editor.commit();
+		}
+
 		if (mAdapter != null) {
 			mAdapter.resizeFragments(mPager, matrix);
 		}
