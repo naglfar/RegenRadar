@@ -16,6 +16,7 @@ import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -37,7 +38,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	static String API_URL = "http://kunden.wetteronline.de/RegenRadar/radar_android2.xml";
 	static String API_IMAGES = "http://kunden.wetteronline.de/RegenRadar/";
 
-	OneFingerViewPager mPager;
+	ViewPager mPager;
 	TimePagerAdapter mAdapter;
 	PageIndicator mIndicator;
 	ProgressBar mProgress;
@@ -275,7 +276,7 @@ public class MainActivity extends SherlockFragmentActivity {
 
 			mAdapter = new TimePagerAdapter(getSupportFragmentManager(), values);
 
-			mPager = (OneFingerViewPager)findViewById(R.id.regen_pager);
+			mPager = (ViewPager)findViewById(R.id.regen_pager);
 
 			// disable swiping with more than 1 fingers
 			/*mPager.setOnTouchListener(new OnTouchListener() {

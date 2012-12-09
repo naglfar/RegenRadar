@@ -5,6 +5,13 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+/**
+ *
+ * Not used anymore,
+ * kept for learning purposes.
+ *
+ */
+
 public class OneFingerViewPager extends ViewPager {
 
 	float startX = 0;
@@ -53,7 +60,8 @@ public class OneFingerViewPager extends ViewPager {
 			ignoreEvent = true;
 		}
 		if (!ignoreEvent && distanceOverThreshold() && e.getPointerCount() == 1) {
-			return true;
+			//return true;
+			return super.onInterceptTouchEvent(e);
 		}
 
 		return false;

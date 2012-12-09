@@ -18,6 +18,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.ImageView;
 
 public class TouchImageView extends ImageView {
@@ -75,7 +76,10 @@ public class TouchImageView extends ImageView {
 				mScaleDetector.onTouchEvent(event);
 				PointF curr = new PointF(event.getX(), event.getY());
 
-				//Log.v("TOUCH", ""+event.getAction());
+				ViewParent vp = v.getParent();
+				if (event.getPointerCount() > 1) {
+					vp.requestDisallowInterceptTouchEvent(true);
+				}
 
 				switch (event.getAction()) {
 					case MotionEvent.ACTION_DOWN:
