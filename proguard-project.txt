@@ -18,3 +18,19 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+
+# from Sherlock FAQ:
+-keep class android.support.v4.app.** { *; }
+-keep interface android.support.v4.app.** { *; }
+-keep class com.actionbarsherlock.** { *; }
+-keep interface com.actionbarsherlock.** { *; }
+
+-keepattributes *Annotation*
+
+# some more
+-keep public class * extends android.view.View
+-keep public class * extends android.view.ViewGroup
+-keep public class * extends android.support.v4.app.Fragment
+-keep public class * extends com.actionbarsherlock.** { *; }
+-keep class com.viewpagerindicator.** { *; }
